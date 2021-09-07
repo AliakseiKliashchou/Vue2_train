@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .circle {
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        border-radius: 50%;
+      }
+      .red {
+        background-color: red;
+      }
+      .green {
+        background-color: green;
+      }
+      .blue {
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="app">
+      <h1>Hello {{ name }}</h1>
+      <input type="text" v-on:input="changeName">
+      <h1>{{ sayHello() }}</h1>
+      <h1>
+        <a v-bind:href="url">{{ url }}</a>
+        <a :href="url">{{ url }}!!!!</a>
+      </h1>
+      <h2 v-html="html"></h2>
+      <h2 v-on:mouseover="onHover">Counter: {{ counter }}</h2>
+      <button v-on:click="increment(1)">Increment</button>
+      <button @click="increment(1)">Increment</button>
+      <button v-on:click="increment(5)">Plus 5</button>
+      <h1>
+        <a href="http://google.com" target="_blank" v-on:click.prevent=""></a>
+        <h2 v-on:mousemove="handleMousemove">
+          X: {{ x }} / Y: {{ y }}
+          <span v-on:mousemove.stop="">Don't change</span>
+        </h2>
+      </h1>
+
+      <hr>
+
+      <input type="text" v-on:keyup.enter.space="alertValue">
+
+      <hr>
+
+      <input type="text" @input="inputValue = $event.target.value" :value="inputValue">
+      <input type="text" v-model.lazy="inputValue">
+      <h2>{{ inputValue }}</h2>
+
+      <hr>
+
+      <div
+        class="circle"
+        @click="isActiveCircle = !isActiveCircle"
+        :class="{'red': isActiveCircle, 'green': !isActiveCircle}"
+      ></div>
+      <div class="circle" :class="color"></div>
+      <div class="circle" :class="getCssClasses()"></div>
+      <div class="circle" :class="getCssClasses"></div> <!--Computed-->
+      <div class="circle" :class="[color, {'green': isActiveCircle}]"></div>
+      <input type="text" v-model="color">
+
+      <hr>
+      <div class="circle" :style="{'background-color': color2}"></div>
+      <div class="circle"></div>
+      <input type="text" v-model="color2">
+
+      <hr>
+      <!-- <h2 v-if="isVisible">Hello world</h2>
+      <h2 v-if="!isVisible">Bye Bye</h2> -->
+
+      <h2 v-if="isVisible">Hello world</h2>
+      <h2 v-else>Bye Bye</h2>
+
+      <h2 v-if="type === 'a'">A</h2>
+      <h2 v-else-if="type === 'b'">B</h2>
+      <h2 v-else-if="type === 'c'">C</h2>
+      <h2 v-else>Not match</h2>
+      <input type="text" v-model="type">
+      
+      <button @click="isVisible = !isVisible">Toggle</button>
+
+      <hr>
+      <h2 v-show="isVisible">Hello world</h2>
+      <h2 v-show="!isVisible">Bye Bye</h2>
+      <button @click="isVisible = !isVisible">Toggle</button>
+
+      <hr>
+      <ul>
+        <li v-for="(person, index) in people">{{ person }}</li>
+      </ul>
+
+      <hr>
+      <h2>Counter: {{ counter }}</h2>
+      <!-- <h3>{{ condition }}</h3> -->
+      <h3>{{ result }}</h3>
+      <button @click="add">Add</button>
+      <button @click="sub">Sub</button>
+
+      <hr>
+      <h2>{{ title }}</h2>
+      <button @click="title = 'Bye bye!'">Update</button>
+
+    </div>
+
+    <div id="app2">
+      <hr>
+      <h2 ref="heading">{{ title }}</h2>
+      <button @click="updateFirstTitle">Update</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script>
+      var vue_1 = new Vue({
+        el: '#app',
+        data: {
+          name: 'Alex',
+          url: 'http://www.google.com',
+          html: '<a href="http://google.com">Google</a>',
+          counter: 0,
+          condition: '',
+          x: null,
+          y: null,
+          inputValue: 'Test',
+          isActiveCircle: false,
+          // color: null
+          color: 'red',
+          color2: null,
+          isVisible: true,
+          type: 'a',
+          people: [
+            'Alex',
+            'Vasya',
+            'Petya'
+          ],
+          title: 'Hello world'
+        },
+        computed: {
+          getCssClasses: function() {
+            return {
+              'red': this.isActiveCircle,
+              'green': !this.isActiveCircle
+            }
+          },
+          result: function() {
+            return this.counter > 3 ? 'More than 3': 'Less than 3';
+          }
+        },
+        methods: {
+          changeName: function(event) {
+            this.name = event.target.value;
+          },
+          sayHello: function() {
+            return `Hello ${this.name}`
+          },
+          increment: function(num) {
+            this.counter += num;
+          },
+          onHover: function(event) {
+            event.target.style.color = 'red';
+          },
+          handleMousemove: function(event) {
+            this.x = event.clientX;
+            this.y = event.clientY;
+          },
+          alertValue: function(event) {
+            alert(event.target.value);
+          },
+          getCssClasses: function() {
+            return {
+              'red': this.isActiveCircle,
+              'green': !this.isActiveCircle
+            }
+          },
+          alertFirst: () => setTimeout(() => alert('From First!') ,1500),
+          add: function() {
+            this.counter++;
+            // this.condition = this.counter > 3 ? 'More than 3': 'Less than 3'
+          },
+          sub: function() {
+            this.counter--;
+            // this.condition = this.counter > 3 ? 'More than 3': 'Less than 3'
+          },
+          // result: function() {
+          //   return this.counter > 3 ? 'More than 3': 'Less than 3';
+          // }
+        },
+        watch: {
+          counter: function() {
+            console.log(this.counter);
+          }
+        }
+      })
+
+      var vue_2 = new Vue({
+        el: '#app2',
+        data: {
+          title: 'Vue 2'
+        },
+        methods: {
+          updateFirstTitle: function() {
+            vue_1.title = 'CHECK';
+            // vue_1.alertFirst();
+            console.log(this.$refs.heading.style.color = 'red');
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
